@@ -8,4 +8,24 @@ class Book:
         self.author_id = author_id
         self.available = available
 
-    pass
+
+    @classmethod
+    def create(cls, title, published_date, author_id):
+
+        pass
+
+    @classmethod
+    def delete(cls, book_id):
+
+        pass
+
+    @classmethod
+    def get_all(cls):
+
+        pass
+
+    @classmethod
+    def get_by_id(cls, book_id):
+
+        pass
+

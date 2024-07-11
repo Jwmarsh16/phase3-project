@@ -30,12 +30,21 @@ class Author:
         if not isinstance(value, datetime.date):
             raise ValueError("Author birth date must be a valid date.")
         self._birth_date = value
+
+    def save(self):
+        if self.id is None:
+            CURSOR.execute("INSERT INTO authors (name, birth_date) VALUES (?,?)", (self.name, self.birth_date))
+            self.id = CONN.lastrowid
+        else:
+            CURSOR.execute("UPDATE authors SET name =?, birth_date =? WHERE id =?", (self.name, self.birth_date, self.id))
+            CONN.commit()
     
 
     @classmethod
     def create(cls, name, birth_date):
-        CURSOR.execute("INSERT INTO authors (name, birth_date) VALUES (?, ?)", (name, birth_date))
-        CONN.commit()
+        author = cls(name=name, birth_date=birth_date)
+        author.save()
+        return author
 
 
     @classmethod
@@ -59,4 +68,15 @@ class Author:
             return cls(id=row[0], name=row[1], birth_date=row[2])
         else:
             return None
+        
+    @classmethod
+    def create_table(cls):
+        CURSOR.execute("""
+            CREATE TABLE IF NOT EXISTS authors (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL UNIQUE,
+                birth_date DATE NOT NULL
+            )
+        """)
+        CONN.commit()
 

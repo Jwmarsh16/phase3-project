@@ -12,15 +12,18 @@ class Author:
     def name(self):
         return self._name
     
+    
     @name.setter
     def name(self, value):
         if not isinstance(value, str) or len(value) == 0:
             raise ValueError("Author name must be a string with at least one character.")
         self._name = value
 
+
     @property
     def birth_date(self):
         return self._birth_date
+    
     
     @birth_date.setter
     def birth_date(self, value):
@@ -31,23 +34,29 @@ class Author:
 
     @classmethod
     def create(cls, name, birth_date):
-        
+        CURSOR.execute("INSERT INTO authors (name, birth_date) VALUES (?, ?)", (name, birth_date))
+        CONN.commit()
 
-        pass
 
     @classmethod
     def delete(cls, author_id):
-        
+        CURSOR.execute("DELETE FROM authors WHERE id =?", (author_id,))
+        CONN.commit()
 
-        pass
 
     @classmethod
     def get_all(cls):
-       
+        CURSOR.execute("SELECT * FROM authors")
+        authors = CURSOR.fetchall()
+        return [cls(id=row[0], name=row[1], birth_date=row[2]) for row in authors]
 
-        pass
 
     @classmethod
     def get_by_id(cls, author_id):
+        CURSOR.execute("SELECT * FROM authors WHERE id =?", (author_id,))
+        row = CURSOR.fetchone()
+        if row:
+            return cls(id=row[0], name=row[1], birth_date=row[2])
+        else:
+            return None
 
-        pass
